@@ -236,6 +236,8 @@ void saveToSD()
 //conversly, if we place it inside the count event handler, it will show the time of the last count
 void updateLCD()
 {
+  now = rtc.now();
+
   lcd.setCursor(0, 0);
   lcd.print("Count: ");
   lcd.print(totalCount);
@@ -250,6 +252,10 @@ void updateLCD()
 //this function prints everything thats going to the sd card, to the serial.
 void printToSerial()
 {
+  now = rtc.now();
+  float cels = rtc.getTemperature();
+  float far = cels * 1.8 + 32;
+
   Serial.print(now.month(), DEC);
   Serial.print(',');
   Serial.print(now.day(), DEC);
@@ -264,6 +270,6 @@ void printToSerial()
   Serial.print(",");
   Serial.print(far);
   Serial.print(",");
-  Serial.print(count);
+  Serial.print(totalCount);
   Serial.println(",");
 }
