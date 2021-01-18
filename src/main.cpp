@@ -19,12 +19,13 @@ LiquidCrystal_I2C lcd(0x27, 16, 2); //initialize LCD object
 File myFile;                        //initialize SD object
 DateTime now;                       //initialize DateTime object
 
-/* ----Laser/Button------*/
+/* ------Button------*/
 const int BUTTON_PIN = 8;   //using button instead of laser interrupt for debugging. (button is connected to 5v, when pressed pin will read high)
 bool buttonState = LOW;     //track current state of button for debouncing and event triggering purposes
 int buttonDebounceMS = 50;  //Minimum time for button state to remain the same before registering as change
 bool lastButtonState = LOW; //temporary holder for debouncing trigger events
 
+/* ------Laser------*/
 const int pinLaser = 4;     // output signal pin of laser module/laser pointer
 const int pinReceiver = 3;  // input signal pin of receiver/detector (the used module does only return a digital state)
 bool laserState = HIGH;     //Current state of laser, high means uninterrupted
@@ -44,6 +45,11 @@ unsigned long lastDebounceTimeBtn = 0;
 unsigned long lastDebounceTimeLsr = 0;
 bool countIncremented = false; //flag to know if the current trigger was counted already (solves the "horse" problem)
 
+/*----------------------------------------------------------------------
+------------------------------------------------------------------------
+-------------------           Functions           ----------------------
+------------------------------------------------------------------------
+----------------------------------------------------------------------*/
 /* -----Function Prototypes -----*/
 //just declaring them up here so the compiler is aware of them, detail below main code
 void watchForTrigger(); //this will be running constantly in loop to watch for laser/button press and set the flags if that happens
@@ -53,6 +59,11 @@ void saveToSD();        //write data to SD card
 void updateLCD();       //update LCD with current count and time
 void printToSerial();   //print data to serial port for debugging
 
+/*----------------------------------------------------------------------
+------------------------------------------------------------------------
+-------------------             Setup             ----------------------
+------------------------------------------------------------------------
+----------------------------------------------------------------------*/
 void setup()
 {
   Serial.begin(9600); // initialize serial communication at 9600 bits per second:
@@ -79,6 +90,11 @@ void setup()
   digitalWrite(pinLaser, HIGH); //turn on the laser on boot
 }
 
+/*----------------------------------------------------------------------
+------------------------------------------------------------------------
+-------------------           Main Loop           ----------------------
+------------------------------------------------------------------------
+----------------------------------------------------------------------*/
 void loop()
 {
   if (true) //laser on if before 7pm
@@ -92,6 +108,12 @@ void loop()
     //eventual shutdown based on time of day
   }
 }
+
+/*----------------------------------------------------------------------
+------------------------------------------------------------------------
+-------------------       Function Details        ----------------------
+------------------------------------------------------------------------
+----------------------------------------------------------------------*/
 
 /* ------ Trigger Monitor ---------*/
 //this function watches button and laser for a change in state that lasts longer than "buttonDebounceMS" or "laserDebounceMS"
